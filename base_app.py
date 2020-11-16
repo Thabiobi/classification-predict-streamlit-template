@@ -60,7 +60,7 @@ def main():
 	if selection == "Home":
 		st.title("Welcome!")
 		header_image = Image.open('resources/6-climatechange.jpg')
-		st.image(header_image, width=500)
+		st.image(header_image, use_column_width=True)
 		st.subheader("Fighting Climate Change with AI")
 
 	# Building out the "Information" page
@@ -74,10 +74,10 @@ def main():
 		st.subheader("App Usage")
 		st.markdown("This app requires the user to input a text that is related to climate change and the app will classify that given text")
 		st.markdown("the text will be classified to it being, show non believe in man made climate change, neither belief nor non belief in man made climate change, belief in climate change or  classified as factual/news about climate change.")
-		st.markdown("===============================================================================================================================================================================================================================")
+		st.markdown("==========================================================================")
 		st.markdown("take a look at our general exploratory data analysis on the 'EDA' page, make predictions on the 'Prediction' page that can be navigated to in the sidebar and also find out a who are the people behind the work.")
-		st.markdown("===============================================================================================================================================================================================================================")
-		
+		st.markdown("==========================================================================")
+
 		st.subheader("Raw Twitter data and label")
 		if st.checkbox('Show raw data'): # data is hidden if box is unchecked
 			st.write(raw[['sentiment', 'message']]) # will write the df to the page
@@ -186,23 +186,6 @@ def main():
 			else:
 				st.success('Text has ben classified as factual/news about climate change')
 			st.success("Text Classified as:{}".format(prediction))
-
-		if modelChoice == 'SMV':
-			vect_text = tweet_cv.transform([tweet_text]).toarray()
-			#load pkl file with model and make predictions
-			predictor = joblib.load(open(os.path.join("resources/smv_model.pickle"),"rb"))
-			prediction = predictor.predict(vect_text)
-			#when model has ran succefully, it will print out predictions
-			if prediction[0] == -1:
-				st.success('Text has been classified to show non believe in man made climate change')
-			elif prediction[0] == 0:
-				st.success('Text has been classified to being belief nor non belief in man made climate change')
-			elif prediction[0] == 1:
-				st.success('Text has been classified to show belief in man made climate change')
-			else:
-				st.success('Text has ben classified as factual/news about climate change')
-			st.success("Text Classified as:{}".format(prediction))
-
 
 	if selection == "About us":
 		st.image(Image.open('resources/imgs/EDSA_logo.png'),caption=None, use_column_width=True)
