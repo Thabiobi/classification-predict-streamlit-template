@@ -28,25 +28,13 @@ import joblib,os
 # Data dependencies
 import pandas as pd
 import numpy as np
-import matplotlib.pyplot as plt
-import matplotlib
-import seaborn as sns
-from wordcloud import WordCloud
-from nltk.tokenize import sent_tokenize, word_tokenize
-from sklearn.metrics import accuracy_score
-import re
-import string
-import nltk
-nltk.download('stopwords')
-nltk.download('wordnet')
-from nltk.corpus import stopwords
-#stop_words = set(stopwords.words("english"))
-from nltk.stem import WordNetLemmatizer
-from nltk.corpus import words
-
-# for plots
-import plotly.graph_objects as go
 from PIL import Image 
+
+from sklearn.linear_model import LogisticRegression, SGDClassifier
+from sklearn.svm import LinearSVC, SVC
+
+
+
 
 # Vectorizer
 news_vectorizer = open("resources/tfidfvect.pkl","rb")
@@ -54,68 +42,13 @@ tweet_cv = joblib.load(news_vectorizer) # loading your vectorizer from the pkl f
 
 # Load your raw data
 raw = pd.read_csv("resources/train.csv")
-
-# cleaning text fucntion
-def clean_tweets(message):
-	""" This function removes punctions and url's from the message"""
-    
-	#change all words into lower case
-	message = message.lower()
-    
-	#replace website links
-	url = r'http[s]?://(?:[A-Za-z]|[0-9]|[$-_@.&+]|[!*\(\),]|(?:%[0-9A-Fa-f][0-9A-Fa-f]))+'
-	web = 'url-web'
-	message = re.sub(url, web, message)
-    
-	#removing puntuation and digits
-	message  = "".join([char for char in message if char not in string.punctuation])
-	message = re.sub('[0-9]+', '', message)
-    
-	#removing stopwords
-	nltk_stopword = nltk.corpus.stopwords.words('english')
-	message = ' '.join([item for item in message.split() if item not in nltk_stopword])
-    
-	return message
-
-
-# more text cleaning
-def cleaning (text):
-	"""this function lemmatizes the message"""
-    
-	text = re.sub(r'[^\w\s]','',text, re.UNICODE)
-	text = text.lower()
-
-	lemmatizer = WordNetLemmatizer()
-	text = [lemmatizer.lemmatize(token) for token in text.split(" ")]
-	text = [lemmatizer.lemmatize(token, "v") for token in text]
-
-	text = " ".join(text)
-	text = re.sub('ãââ', '', text)
-    
-	return text
-
-
-# sentiment prediction
-def statement(sentiment):
-	"""" """
-	# 'anti' text statement
-	if sentiment == -1:
-		st.success("tweet does not believe in man-made climate change")
-	# 'neutral' text statement
-	if sentiment == 0:
-		st.success("tweet neither supports nor refutes the belief of man-made climate change")
-	# 'pro' text sentiment
-	if sentiment == 1:
-		st.success("tweet upports the belief of man-made climate change")
-	# 'news' text statement
-	if sentiment == 2:
-		st.success("tweet links to factual news about climate change")
-	return 	
-
-
+	
 # The main function where we will build the actual app
 def main():
 	"""Tweet Classifier App with Streamlit """
+
+	st.title("Tweet Classification")
+	st.subheader("Climate change tweet classification")
 
 	# Creating sidebar with selection box -
 	# you can create multiple pages this way
@@ -173,7 +106,6 @@ def main():
 			st.image(Image.open('resources/imgs/retweets per sentiment class.jpeg'), caption=None, use_column_width=True)
 			st.markdown("The Pro sentiment class seems to have more tweets retweeted with over 5000 retweets. while other sentiment classes have less than 2000 retweets. looks like evryone is retweeting positive climate change tweets more than others.")
 			
-
 		if st.checkbox('Sentiment Hashtags'):
 			st.markdown("popular Hashtags")
 			#sentiment choice
@@ -196,24 +128,67 @@ def main():
 	# Building out the predication page
 	if selection == "Prediction":
 		st.info("Prediction with ML Models")
+		# Understanding sentiment predictions
+		st.image(Image.open('resources/imgs/understanding predictions table.png'), caption=None, use_column_width=True)
+
 		# Creating a text box for user input
 		tweet_text = st.text_area("Enter Text","Type Here")
-
-		if st.button("Classify"):
+		
+		modelChoice = st.radio("Choose a model", ("Logistic Regression","Linear SVC"))   
+		#if st.button("Classify"):
 			# Transforming user input with vectorizer
-			vect_text = tweet_cv.transform([tweet_text]).toarray()
+			#vect_text = tweet_cv.transform([tweet_text]).toarray()
 			# Load your .pkl file with the model of your choice + make predictions
 			# Try loading in multiple models to give the user a choice
-			predictor = joblib.load(open(os.path.join("resources/Logistic_regression.pkl"),"rb"))
-			prediction = predictor.predict(vect_text)
+			#predictor = joblib.load(open(os.path.join("resources/Logistic_regression.pkl"),"rb"))
+			#prediction = predictor.predict(vect_text)
 
 			# When model has successfully run, will print prediction
 			# You can use a dictionary or similar structure to make this output
 			# more human interpretable.
+			#st.success("Text Categorized as: {}".format(prediction))
+	
+		if modelChoice == 'Logistic Regression':
+			vect_text = tweet_cv.transform([tweet_text]).toarray()
+			predictor = joblib.load(open(os.path.join("resources/logreg_model.pickle"),"rb"))
+			prediction = predictor.predict(vect_text)
+			#when model has ran succefully, it will print out predictions
+			if prediction[0] == -1:
+				st.success('tweet has been classified to show non believe in man made climate change')
+			elif prediction[0] == 0:
+				st.success('tweet has been classified to being belief nor non belief in man made climate change')
+			elif prediction[0] == 1:
+				st.success('tweet has been classified to show belief in man made climate change')
+			else:
+				st.success('tweet has ben classified as factual/news about climate change')
 			st.success("Text Categorized as: {}".format(prediction))
 
-	
-	
+		if modelChoice == 'Linear SVC':
+			vect_text = tweet_cv.transform([tweet_text]).toarray()
+			#load pkl file with model and make predictions
+			predictor = joblib.load(open(os.path.join("resources/lin_svc_model.pickle"),"rb"))
+			prediction = predictor.predict(vect_text)
+			#when model has ran succefully, it will print out predictions
+			if prediction[0] == -1:
+				st.success('tweet has been classified to show non believe in man made climate change')
+			elif prediction[0] == 0:
+				st.success('tweet has been classified to being belief nor non belief in man made climate change')
+			elif prediction[0] == 1:
+				st.success('tweet has been classified to show belief in man made climate change')
+			else:
+				st.success('tweet has ben classified as factual/news about climate change')
+			st.success("Tweet Classified as:{}".format(prediction))
+
+
+	# Building out the "About Us" page
+	if selection == "About Us":
+		st.image(Image.open('resources/imgs/EDSA_logo.png'),caption=None, use_column_width=True)
+		st.subheader("we are Explore Data Science Academy students. we happen to be the only all ladies group from the classifcation sprint:grin:")
+
+		
+
+
+
 # Required to let Streamlit instantiate our web app.  
 if __name__ == '__main__':
 	main()
