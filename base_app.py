@@ -144,10 +144,40 @@ def main():
 	# Building out the "EDA" page
 	if selection == "EDA":
 		st.title("Exploratory Data Analysis")
+		if st.checkbox("Tweets per Sentiment"):
+			st.markdown("Class Distribution")
+			st.markdown("-1: **Negative**(anti-climate change tweet)")
+			st.markdown("0: **Neutral**")
+			st.markdown("1: **Positive**(pro climate change tweet)")
+			st.markdown("2: **Factual/News** related tweet")
+			st.image(Image.open('resources/imgs/class distribution.jpeg'), caption='Class Distribution', use_column_width=True)
+			st.markdown("Looking at the distribution we are able to see that the data is imbalanced, most tweets are skewed to the Pro sentiment category supporting the belief of man-made climate change.")
+
+		if st.checkbox('Wordcloud Analysis'):
+			Wordcloud = st.radio("choose an option", ("Negative popular words", "Neutral popular words", "Positive popular words", "Factual/News popular words"))
+			if Wordcloud == "Negative popular words":
+				st.image(Image.open('resources/imgs/anti climate change wordcloud.jpeg'), caption=None, use_column_width=True)
+			if Wordcloud == "Neutral popular words":
+				st.image(Image.open('resources/imgs/neutral wordcloud.jpeg'), caption=None, use_column_width=True)
+			if Wordcloud == "Positive popular words":
+				st.image(Image.open('resources/imgs/pro wordcloud.jpeg'), caption=None, use_column_width=True)
+			if Wordcloud == "Factual/News popular words":
+				st.image(Image.open('resources/imgs/news wordcloud.jpeg'), caption=None, use_column_width=True)
+			st.markdown("The size of the word indicates the relevance in the tweet.")
+			st.markdown("The most popular words in all four classes are climate change, global warming and belief.")
+			st.markdown("The pro and anti groups include a number of words that might be expected in each group.")
+			st.markdown("In the word clouds there is evidence of noisy text which include words such as https, webside, co and RT. These do not assist us in our classification, rather they add noise, we will have another look at it when the noise have been removed.")
+		
+		if st.checkbox('Retweets'):
+			st.markdown("Twitter allows a user to retweet, or RT another users tweets. Retweeting is a great way for creating trends.")
+			st.image(Image.open('resources/imgs/retweets per sentiment class.jpeg'), caption=None, use_column_width=True)
+			st.markdown("The Pro sentiment class seems to have more tweets retweeted with over 5000 retweets. while other sentiment classes have less than 2000 retweets. looks like evryone is retweeting positive climate change tweets more than others.")
+			
+
 		if st.checkbox('Sentiment Hashtags'):
 			st.markdown("popular Hashtags")
 			#sentiment choice
-			sentimentchoice = st.radio("Choose and option", ("don't believe in man-made climate change", "neither supports nor refutes the belief of man-made", "do believe in man-made climate change", "are news related to climate change"))
+			sentimentchoice = st.radio("Choose an option", ("don't believe in man-made climate change", "neither supports nor refutes the belief of man-made", "do believe in man-made climate change", "are news related to climate change"))
 			
 			if sentimentchoice == "don't believe in man-made climate change":
 				st.image(Image.open('resources/imgs/hashtags on the anti-sentiment.png'), caption='Popular hashtags for negative tweet sentiments', use_column_width=True)
@@ -160,8 +190,7 @@ def main():
 
 			if sentimentchoice == "are news related to climate change": 
 				st.image(Image.open('resources/imgs/hashtags on the news setiment.png'), caption="Popular hashtags for factual/news tweet sentiments", use_column_width=True)
-
-
+			st.markdown("We can see that the top 5 hashtags have similar words like Climate, climate change, Trump and Before the flood, although there seem to be words here that are irrelevant, eg. single words like 'tcot' and single letters like 'A', 'p2',")
 
 
 	# Building out the predication page
