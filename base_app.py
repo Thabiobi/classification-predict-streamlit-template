@@ -31,10 +31,9 @@ import numpy as np
 from PIL import Image
 import string 
 
+# Model dependencies
 from sklearn.linear_model import LogisticRegression, SGDClassifier
 from sklearn.svm import LinearSVC, SVC
-
-
 
 # Vectorizer
 news_vectorizer = open("resources/vector.pickle","rb")
@@ -85,7 +84,7 @@ def main():
 	# Building out the "EDA" page
 	if selection == "EDA":
 		st.title("Exploratory Data Analysis")
-		if st.checkbox("Tweets per Sentiment"):
+		if st.checkbox("Tweets per Sentiment"): # data is hidden if box is unchecked
 			st.markdown("Class Distribution")
 			st.markdown("-1: **Negative**(anti-climate change tweet)")
 			st.markdown("0: **Neutral**")
@@ -94,7 +93,8 @@ def main():
 			st.image(Image.open('resources/imgs/class distribution.jpeg'), caption='Class Distribution', use_column_width=True)
 			st.markdown("Looking at the distribution we are able to see that the data is imbalanced, most tweets are skewed to the Pro sentiment category supporting the belief of man-made climate change.")
 
-		if st.checkbox('Wordcloud Analysis'):
+		# wordcloud analysis choice
+		if st.checkbox('Wordcloud Analysis'):  # data is hidden if box is unchecked
 			Wordcloud = st.radio("choose an option", ("Negative popular words", "Neutral popular words", "Positive popular words", "Factual/News popular words"))
 			if Wordcloud == "Negative popular words":
 				st.image(Image.open('resources/imgs/anti climate change wordcloud.jpeg'), caption=None, use_column_width=True)
@@ -109,14 +109,15 @@ def main():
 			st.markdown("The pro and anti groups include a number of words that might be expected in each group.")
 			st.markdown("In the word clouds there is evidence of noisy text which include words such as https, webside, co and RT. These do not assist us in our classification, rather they add noise, we will have another look at it when the noise have been removed.")
 		
-		if st.checkbox('Retweets'):
+		# Retweets info choice
+		if st.checkbox('Retweets'):  # data is hidden if box is unchecked
 			st.markdown("Twitter allows a user to retweet, or RT another users tweets. Retweeting is a great way for creating trends.")
 			st.image(Image.open('resources/imgs/retweets per sentiment class.jpeg'), caption=None, use_column_width=True)
 			st.markdown("The Pro sentiment class seems to have more tweets retweeted with over 5000 retweets. while other sentiment classes have less than 2000 retweets. looks like evryone is retweeting positive climate change tweets more than others.")
 			
-		if st.checkbox('Sentiment Hashtags'):
+		if st.checkbox('Sentiment Hashtags'): # data is hidden if box is unchecked
 			st.markdown("popular Hashtags")
-			#sentiment choice
+			#sentiment hashtags choice
 			sentimentchoice = st.radio("Choose an option", ("don't believe in man-made climate change", "neither supports nor refutes the belief of man-made", "do believe in man-made climate change", "are news related to climate change"))
 			
 			if sentimentchoice == "don't believe in man-made climate change":
@@ -158,6 +159,7 @@ def main():
 	
 		if modelChoice == 'Logistic Regression':
 			vect_text = tweet_cv.transform([tweet_text]).toarray()
+			#load pkl file with model and make predictions
 			predictor = joblib.load(open(os.path.join("resources/logreg_model.pickle"),"rb"))
 			prediction = predictor.predict(vect_text)
 			#when model has ran succefully, it will print out predictions
@@ -186,7 +188,8 @@ def main():
 			else:
 				st.success('Text has ben classified as factual/news about climate change')
 			st.success("Text Classified as:{}".format(prediction))
-
+	
+	# Building out the "about us " page
 	if selection == "About us":
 		st.image(Image.open('resources/imgs/EDSA_logo.png'),caption=None, use_column_width=True)
 		st.subheader("we are Explore Data Science Academy students. we happen to be the only all ladies group from the classifcation sprint:grin:")
