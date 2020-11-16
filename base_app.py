@@ -28,11 +28,11 @@ import joblib,os
 # Data dependencies
 import pandas as pd
 import numpy as np
-from PIL import Image 
+from PIL import Image
+import string 
 
 from sklearn.linear_model import LogisticRegression, SGDClassifier
 from sklearn.svm import LinearSVC, SVC
-
 
 
 
@@ -179,11 +179,13 @@ def main():
 				st.success('tweet has ben classified as factual/news about climate change')
 			st.success("Tweet Classified as:{}".format(prediction))
 
-
 	# Building out the "About Us" page
 	if selection == "About Us":
 		st.image(Image.open('resources/imgs/EDSA_logo.png'),caption=None, use_column_width=True)
 		st.subheader("we are Explore Data Science Academy students. we happen to be the only all ladies group from the classifcation sprint:grin:")
+		st.info("Thabisile Obi")
+		st.image(Image.open('resources/imgs/Thabi.jpeg'), caption=None, width=250)
+
 
 		
 
