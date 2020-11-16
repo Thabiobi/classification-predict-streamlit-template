@@ -34,6 +34,15 @@ import seaborn as sns
 from wordcloud import WordCloud
 from nltk.tokenize import sent_tokenize, word_tokenize
 from sklearn.metrics import accuracy_score
+import re
+import string
+import nltk
+nltk.download('stopwords')
+nltk.download('wordnet')
+from nltk.corpus import stopwords
+#stop_words = set(stopwords.words("english"))
+from nltk.stem import WordNetLemmatizer
+from nltk.corpus import words
 
 # for plots
 import plotly.graph_objects as go
@@ -134,7 +143,25 @@ def main():
 
 	# Building out the "EDA" page
 	if selection == "EDA":
-		st.success("")
+		st.title("Exploratory Data Analysis")
+		if st.checkbox('Sentiment Hashtags'):
+			st.markdown("popular Hashtags")
+			#sentiment choice
+			sentimentchoice = st.radio("Choose and option", ("don't believe in man-made climate change", "neither supports nor refutes the belief of man-made", "do believe in man-made climate change", "are news related to climate change"))
+			
+			if sentimentchoice == "don't believe in man-made climate change":
+				st.image(Image.open('resources/imgs/hashtags on the anti-sentiment.png'), caption='Popular hashtags for negative tweet sentiments', use_column_width=True)
+				
+			if sentimentchoice == "neither supports nor refutes the belief of man-made":
+				st.image(Image.open('resources/imgs/hashtags on the neutral sentiment.png'), caption='Popular hashtags with neutral tweet sentiments')
+			
+			if sentimentchoice == "do believe in man-made climate change":
+				st.image(Image.open('resources/imgs/hashtags on the pro sentiment.png'), caption="Popular hashtags for positive tweet sentiments", use_column_width=True)
+
+			if sentimentchoice == "are news related to climate change": 
+				st.image(Image.open('resources/imgs/hashtags on the news setiment.png'), caption="Popular hashtags for factual/news tweet sentiments", use_column_width=True)
+
+
 
 
 	# Building out the predication page
