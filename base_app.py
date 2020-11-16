@@ -58,7 +58,7 @@ def main():
 
 	# Building out the "Home" page
 	if selection == "Home":
-		st.title("Lets Do Some Classification")
+		st.title("Welcome!")
 		st.markdown("we fight climate change one tweet at a time")
 		header_image = Image.open('resources/6-climatechange.jpg')
 		st.image(header_image, width=500)
@@ -185,11 +185,13 @@ def main():
 		st.subheader("we are Explore Data Science Academy students. we happen to be the only all ladies group from the classifcation sprint:grin:")
 		st.info("Thabisile Obi")
 		st.image(Image.open('resources/imgs/Thabi.jpeg'), caption=None, width=250)
-
-
+		st.info("Simangele Maphanga")
+		st.image(Image.open('resources/imgs/sima.jpeg'), caption=None, width=250)
+		st.info("Mokgadi Maake")
+		st.image(Image.open('resources/imgs/mokgadi.jpeg'), caption=None, width=250)
+		st.info("Palesa Hlungwani")
+		st.image(Image.open('resources/imgs/palesa.jpg'), caption=None, width=250)
 		
-
-
 
 # Required to let Streamlit instantiate our web app.  
 if __name__ == '__main__':
